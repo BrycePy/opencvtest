@@ -1,0 +1,53 @@
+{
+  "name": "test4",
+  "id": "0004",
+  "description": "200mm x 200mm square of aluminium with single 3mm hole",
+  "obj_file": "Part1",
+  "defects": {
+    "tooling marks / tool marks": [
+      {
+        "description": "sanding damage covers approximately 15% of one side of part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "CIW",
+        "note": null
+      },
+      {
+        "description": "two scrape damages that appear as lines of small scratches each over 100mm long on one side of part",
+        "e-coat affected": false,
+        "requires_fix": false,
+        "responsible": "CIW",
+        "note": null
+      }
+    ],
+    "oil / residue / grease": [
+      {
+        "description": "heavy oil remains on one side of part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": "oil paint has been used in place of oil to make test part easier to handle"
+      }
+    ],
+    "gaps": null,
+    "tester marks / scratches": [
+      {
+        "description": "4 large scratches each 80-120 mm long on one side of part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": null
+      }
+    ],
+    "vendor error": [
+      {
+        "description": "the 3mm hole has not been drilled",
+        "e-coat affected": false,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": null
+      }
+    ]
+  },
+  "notes": null
+}

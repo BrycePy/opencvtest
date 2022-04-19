@@ -1,0 +1,14 @@
+{
+  "name": "test7",
+  "id": "0007",
+  "description": "200mm x 200mm square of aluminium with single 3mm hole",
+  "obj_file": "Part1",
+  "defects": {
+    "tooling marks / tool marks": null,
+    "oil / residue / grease": null,
+    "gaps": null,
+    "tester marks / scratches": null,
+    "vendor error": null
+  },
+  "notes": "this is a hidden test therefore anything similar to other tests that follows similar e-coat damage + fix required rules could be on the test piece"
+}

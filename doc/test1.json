@@ -1,0 +1,38 @@
+{
+  "name": "test1",
+  "id": "0001",
+  "description": "200mm x 200mm square of aluminium with single 3mm hole",
+  "obj_file": "Part1",
+  "defects": {
+    "tooling marks / tool marks": [
+      {
+        "description": "a single 3mm tooling mark is on one side",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "CIW",
+        "note": null
+      }
+    ],
+    "oil / residue / grease": null,
+    "gaps": null,
+    "tester marks / scratches": [
+      {
+        "description": "two large scratches on one side each almost whole length of part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": null
+      }
+    ],
+    "vendor error": [
+      {
+        "description": "the 3mm hole has not been drilled",
+        "e-coat affected": false,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": null
+      }
+    ]
+  },
+  "notes": null
+}

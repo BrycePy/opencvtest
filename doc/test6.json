@@ -1,0 +1,66 @@
+{
+  "name": "test6",
+  "id": "0006",
+  "description": "two 200mm x 200mm square of aluminium with two 3mm holes attached together with m3 bolts + nuts",
+  "obj_file": "Part2",
+  "defects": {
+    "tooling marks / tool marks": [
+      {
+        "description": "missed drill hole attempt",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "CIW",
+        "note": null
+      },
+      {
+        "description": "small amounts of denting near where parts join",
+        "e-coat affected": false,
+        "requires_fix": false,
+        "responsible": "CIW",
+        "note": null
+      }
+    ],
+    "oil / residue / grease": null,
+    "gaps": [
+      {
+        "description": "one 1mm gap on one side of the part",
+        "e-coat affected": false,
+        "requires_fix": false,
+        "responsible": "Vendor",
+        "note": null
+      },
+      {
+        "description": "one 4mm gap on one side of the part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": null
+      }
+    ],
+    "tester marks / scratches": [
+      {
+        "description": "two large scratches 150+ mm long on one side of part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": null
+      },
+      {
+        "description": "two medium scratches 20+ mm long on one side of part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "Vendor",
+        "note": null
+      },
+      {
+        "description": "four small scratches 5+ mm long on one side of part",
+        "e-coat affected": false,
+        "requires_fix": false,
+        "responsible": "CIW",
+        "note": null
+      }
+    ],
+    "vendor error": null
+  },
+  "notes": null
+}

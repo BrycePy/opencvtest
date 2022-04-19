@@ -1,0 +1,22 @@
+{
+  "name": "test2",
+  "id": "0002",
+  "description": "200mm x 200mm square of aluminium with single 3mm hole",
+  "obj_file": "Part1",
+  "defects": {
+    "tooling marks / tool marks": [
+      {
+        "description": "sanding damage covers over 80% of one side of the part",
+        "e-coat affected": true,
+        "requires_fix=======================================================": true,
+        "responsible": "CIW",
+        "note": null
+      }
+    ],
+    "oil / residue / grease": null,
+    "gaps": null,
+    "tester marks / scratches": null,
+    "vendor error": null
+  },
+  "notes": null
+}
