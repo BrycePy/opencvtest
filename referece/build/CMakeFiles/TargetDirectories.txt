@@ -1,0 +1,9 @@
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/Experimental.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/Nightly.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/Continuous.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/NightlyMemoryCheck.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/opencvtest.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/PACKAGE.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/RUN_TESTS.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/boomz/Desktop/sandbox/opencvtest/build/CMakeFiles/ZERO_CHECK.dir
