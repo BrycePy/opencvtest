@@ -35,11 +35,11 @@ Mat getEdge(Mat image, int blurSize, int thresholdValue) {
 Mat edgeDilateKernal = getStructuringElement(MORPH_RECT, Size(3, 3));
 Mat oilDilateKernal = getStructuringElement(MORPH_RECT, Size(3, 3));
 
-struct retVals {
+struct warpVals {
     Mat warp, invWarp, imageWarp;
 };
 
-retVals getWarp(Mat image, int size, int rotationOffset){
+warpVals getWarp(Mat image, int size, int rotationOffset){
     // Mat imageEdge;
     // cvtColor(image, imageEdge, COLOR_BGR2GRAY);
     Mat imageEdge, blur;
@@ -88,9 +88,9 @@ retVals getWarp(Mat image, int size, int rotationOffset){
         Mat invWarpMatric = getPerspectiveTransform(dst, src);
         Mat imageWarp;
         warpPerspective(image, imageWarp, warpMatric, Size(size, size));
-        return retVals {warpMatric, invWarpMatric, imageWarp};
+        return warpVals {warpMatric, invWarpMatric, imageWarp};
     }
-    return retVals {Mat(), Mat(), Mat()};
+    return warpVals {Mat(), Mat(), Mat()};
 }
 
 struct defectFeatures{
@@ -173,7 +173,7 @@ int main(int, char**) {
         // imshow("cam1", camRGB1);
         // imshow("cam2", camRGB2);
 
-        retVals result;
+        warpVals result;
         result = getWarp(camRGB1, warpSize, 1);
         Mat warpMatric1 = result.warp;
         Mat invWarpMatric1 = result.invWarp;

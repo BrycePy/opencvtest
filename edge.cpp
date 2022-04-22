@@ -150,11 +150,11 @@ Mat processFeed(Mat image) {
     return Mat();
 }
 
-struct retVals {
+struct warpVals {
     Mat warp, invWarp;
 };
 
-retVals getWarp(Mat image, int size, int rotationOffset){
+warpVals getWarp(Mat image, int size, int rotationOffset){
     Mat imageEdge;
     cvtColor(image, imageEdge, COLOR_BGR2GRAY);
     Canny(imageEdge, imageEdge, 25, 200, 3);
@@ -198,9 +198,9 @@ retVals getWarp(Mat image, int size, int rotationOffset){
 
         Mat warpMatric = getPerspectiveTransform(src, dst);
         Mat invWarpMatric = getPerspectiveTransform(dst, src);
-        return retVals {warpMatric, invWarpMatric};
+        return warpVals {warpMatric, invWarpMatric};
     }
-    return retVals {Mat(), Mat()};
+    return warpVals {Mat(), Mat()};
 }
 
 void camDebug(Mat imageBGR) {
@@ -240,7 +240,7 @@ int main(int, char**) {
         imshow("cam2", camRGB2);
 
         // processFeed(camRGB);
-        retVals result = getWarp(camRGB, 500, 1);
+        warpVals result = getWarp(camRGB, 500, 1);
         Mat warpMatric1 = result.warp;
         Mat invWarpMatric1 = result.invWarp;
         
