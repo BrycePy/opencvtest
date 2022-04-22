@@ -8,7 +8,7 @@ using namespace std;
 using namespace cv;
 
 Mat edgeDilateKernal = getStructuringElement(MORPH_RECT, Size(5, 5));
-Mat oilDilateKernal = getStructuringElement(MORPH_ELLIPSE, Size(51, 51));
+Mat oilDilateKernal = getStructuringElement(MORPH_ELLIPSE, Size(31, 31));
 Mat NoiseDilateKernal = getStructuringElement(MORPH_ELLIPSE, Size(51, 51));
 
 
@@ -125,15 +125,22 @@ warpVals getWarp(Mat image, int size, int rotationOffset, int camNum) {
 }
 
 struct defectFeatures {
-    Mat scratch, oil;
+    Mat scratch, oil, hole;
 
     Mat getOverlay() {
         vector<Mat> channels;
+
+        Mat scratchTemp;
+        dilate(scratch, scratchTemp, oilDilateKernal);
+        oil -= scratchTemp;
+        dilate(oil, oil, oilDilateKernal);
+        dilate(oil, oil, oilDilateKernal);
+
         Mat imageFinal;
         Mat imageBlank = Mat::zeros(Size(scratch.rows, scratch.cols), CV_8UC1);
         channels.push_back(oil);
-        channels.push_back(imageBlank);
-        channels.push_back(scratch + oil * 0.3);
+        channels.push_back(hole * 0.5);
+        channels.push_back(scratch + oil * 0.3 + hole * 0.5);
         merge(channels, imageFinal);
         return imageFinal;
     }
@@ -148,8 +155,6 @@ struct defectFeatures {
 
     float getTotalAmount() {
         Mat defect = scratch + oil;
-        erode(defect, defect, NoiseDilateKernal);
-        dilate(defect, defect, NoiseDilateKernal);
         return (float)countNonZero(defect) / (defect.rows * defect.cols);
     }
 
@@ -163,7 +168,7 @@ defectFeatures getFeatures(Mat image) {
     vector<vector<Point>> scratches;
     vector<Vec4i> hierarchy;
 
-    Mat imageScratch = getEdge(image, 7, 3);
+    Mat imageScratch = getEdge(image, 5, 5);
     imshow("imageScratch", imageScratch);
     imageScratch *= 3;
     GaussianBlur(imageScratch, imageScratch, Size(15, 15), 0, 0);
@@ -173,15 +178,42 @@ defectFeatures getFeatures(Mat image) {
     // imshow("imageScratch", imageScratch);
 
     Mat imageOil;
-    GaussianBlur(imageWarpGray, imageWarpGray, Size(15, 15), 0, 0);
+    GaussianBlur(imageWarpGray, imageWarpGray, Size(25, 25), 0, 0);
     imageOil = getEdge(imageWarpGray, 15, 5);
     GaussianBlur(imageOil, imageOil, Size(31, 31), 0, 0);
     threshold(imageOil, imageOil, 35, 255, THRESH_BINARY);
     dilate(imageOil, imageOil, oilDilateKernal);
     imshow("imageOil", imageOil);
 
-    // imshow("imageOil", imageOil);
-    return defectFeatures{imageScratch, imageOil};
+    Mat imageHole(image.rows, image.cols, CV_8UC1, Scalar(0));
+    Mat imageV;
+    extractChannel(imageWarpHSV, imageV, 2);
+    rotate(imageV, imageV, ROTATE_180);
+    Rect crop(280, 50, 150, 150);
+    Mat holeCrop = imageV(crop);
+
+    double min, max;
+    bool p1, p2;
+
+    crop = Rect(40, 40, 20, 20);
+    Mat holeCrop1 = holeCrop(crop);
+    minMaxIdx(holeCrop1, &min, &max);
+    p1 = max - min > 45;
+        
+    crop = Rect(70, 68, 20, 20);
+    Mat holeCrop2 = holeCrop(crop);
+    minMaxIdx(holeCrop2, &min, &max);
+    p2 = max - min > 45;
+
+    if(!(p1 || p2)) {
+        circle(imageHole, Point(280 + 65, 50 + 73), 30, Scalar(255), -1);
+    }
+
+    rotate(imageHole, imageHole, ROTATE_180);
+
+    imshow("imageHole", imageHole);
+
+    return defectFeatures{imageScratch, imageOil, imageHole};
 }
 
 void camDebug(Mat imageBGR) {
@@ -242,7 +274,7 @@ int main(int, char**) {
 
     namedWindow("config", WINDOW_AUTOSIZE);
 
-    int multiplyer = 200;
+    int multiplyer = 90;
     createTrackbar("min", "config", &multiplyer, 1000);
 
     cap1.read(camRGB1);
@@ -263,6 +295,8 @@ int main(int, char**) {
     Mat avgLight(Size(warpSize, warpSize), CV_32FC3);
     // Mat img(warpSize, warpSize, CV_8UC3);
     // RNG rng(12345);
+
+    double defectAmountAverage = 0;
 
     while (true) {
         int64 start = cv::getTickCount();
@@ -311,29 +345,48 @@ int main(int, char**) {
 
         if (!warpResult.empty()) {
             warpResult.cropIn(10);
-            defectFeatures result = getFeatures(warpResult.imageWarp);
+            Mat cam1Warp = warpResult.imageWarp.clone();
+            Mat comb = normalizeLight(cam1Warp);
+            cam1Warp.convertTo(cam1Warp, CV_32FC3);
+            comb.convertTo(comb, CV_32FC3);
+
+            if(avgLight.rows != comb.rows)
+                avgLight = comb.clone();
+
+            avgLight = avgLight * 0.95 + comb * 0.05;
+
+            Mat refDiff = (cam1Warp - avgLight) * ((double)multiplyer / 100) + 128;
+            refDiff.convertTo(refDiff, CV_8UC3);
+            Mat refDiffV;
+            cvtColor(refDiff, refDiffV, COLOR_BGR2HSV);
+            extractChannel(refDiffV, refDiffV, 2);
+            imshow("refDiff", refDiffV);
+
+            defectFeatures result = getFeatures(refDiff);
 
             Mat feature = result.getOverlay();
             imshow("features", feature);
             feature = warpResult.reverse(feature);
 
-            imageAverage = imageAverage * 0.9 + feature * 0.1;
+            imageAverage = imageAverage * 0.8 + feature * 0.2;
             imshow("featuresComb", imageAverage);
 
             float defectAmount = result.getTotalAmount() * 100;
+            defectAmountAverage = defectAmountAverage * 0.9 + defectAmount * 0.1;
     
             Mat imageOverlay;
-            if(defectAmount > 0.3) {
+            if(defectAmountAverage > 0.05) {
                 imageOverlay = warpResult.invert(camRGB1, imageAverage);
-                putText(imageOverlay, "Defect: " + to_string(defectAmount) + "%", Point(10, 30), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255));
+                putText(imageOverlay, "Defect: " + to_string(defectAmountAverage) + "%", Point(10, 30), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255));
             }else{
-                Mat greenOverlay(imageAverage.rows, imageAverage.cols, CV_8UC3, Scalar(0, 200, 0));
-                imageOverlay = warpResult.invert(camRGB1, greenOverlay);
+                Mat greenOverlay(imageAverage.rows, imageAverage.cols, CV_8UC3, Scalar(0, 100, 0));
+                imageOverlay = warpResult.invert(camRGB1, greenOverlay + imageAverage);
             }
 
             Mat output = imageOverlay * 0.9 + camRGB1 * 0.8;
             resize(output, output, Size(), 2, 2);
             imshow("imageOverlay", output);
+
         }else{
             Mat output = camRGB1.clone();
             resize(output, output, Size(), 2, 2);
